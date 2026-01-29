@@ -57,11 +57,15 @@ public class Main {
         empleado.insertarMultiplesEmpleados(empleados);
         
         
-        System.out.println("Buscar empleado por dep");
+        System.out.println("Buscar empleados por dep 10");
         Document filtro1 = new Document("dep", 10);
         List<Document> resultado1 = empleado.buscarEmpleados(filtro1);
         System.out.println(resultado1);
 
-        System.out.println("Buscar todos los empleados por dep");
+        System.out.println("Buscar empleados por dep 10 y 20");
+        Document filtro2 = new Document("dep", 10).append("dep", 20);
+        List<Document> resultado2 = empleado.buscarEmpleados(filtro2);
+        System.out.println(resultado2);
+
     }
 }
