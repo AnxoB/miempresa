@@ -33,11 +33,20 @@ public class Main {
                     menuBuscarPorSalarioYOficio();
                     break;
                 case 5:
+                    menuIncrementarValor();
+                    break;
+                case 6:
+                    menuDecrementarValor();
+                    break;
+                case 7:
+                    menuMediaSalario();
+                    break;
+                case 8:
                     System.out.println("\n¡Hasta luego!");
                     continuar = false;
                     break;
                 default:
-                    System.out.println("\n❌ Opción inválida. Intente nuevamente.\n");
+                    System.out.println("\nOpción inválida. Intente nuevamente.\n");
             }
         }
         scanner.close();
@@ -48,7 +57,10 @@ public class Main {
         System.out.println("2. Buscar empleados por departamento 10");
         System.out.println("3. Buscar empleados por múltiples departamentos");
         System.out.println("4. Buscar empleados por salario y oficio");
-        System.out.println("5. Salir");
+        System.out.println("5. Subir el salario a los analistas 100€");
+        System.out.println("6. Decrementar la comisión existente en 20€");
+        System.out.println("7. Visualizar la media del salario");
+        System.out.println("8. Salir");
         System.out.print("Seleccione una opción: ");
     }
 
@@ -142,7 +154,7 @@ public class Main {
         System.out.println();
     }
 
-    private static void incrementarValor() {
+    private static void menuIncrementarValor() {
         System.out.println("Subiendo 100€ a todos los Analistas");
         empleado.incrementarSalario("Analista", 100);
 
@@ -152,8 +164,13 @@ public class Main {
         System.out.println(analistas);
     }
 
-    private static void decrementarValor() {
+    private static void menuDecrementarValor() {
         System.out.println("Restando 20€ de comisión");
         empleado.decrementarComision(20);
+    }
+
+    private static void menuMediaSalario(){
+        System.out.println("Obteniendo la media de los usuarios");
+        empleado.obtenerMedia();
     }
 }

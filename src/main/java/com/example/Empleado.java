@@ -76,14 +76,32 @@ public class Empleado {
     }
 
     public void decrementarComision(int cantidad) {
-    try (MongoProvider provider = new MongoProvider()) {
-        Bson filtro = Filters.exists("comision");
-        Bson operacion = Updates.inc("comision", -cantidad);
+        try (MongoProvider provider = new MongoProvider()) {
+            Bson filtro = Filters.exists("comision");
+            Bson operacion = Updates.inc("comision", -cantidad);
 
-        UpdateResult resultado = provider.miempresa().updateMany(filtro, operacion);
-        System.out.println("Se ha reducido la comisión a " + resultado.getModifiedCount() + " empleados.");
-    } catch (Exception e) {
-        System.out.println("Error: " + e.getMessage());
+            UpdateResult resultado = provider.miempresa().updateMany(filtro, operacion);
+            System.out.println("Se ha reducido la comisión a " + resultado.getModifiedCount() + " empleados.");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
-}
+
+    public void obtenerMedia(){
+        try (MongoProvider provider = new MongoProvider()) {
+            Document resultado = provider.miempresa().aggregate(
+                List.of(new Document("$group", new Document("_id", "emp_no")
+                    .append("media", new Document("$avg", "$salario"))))
+            ).first();
+            
+            if (resultado != null) {
+                System.out.println("Media de salario: " + String.format("%.2f", resultado.getDouble("media")) + "€\n");
+            }
+        } catch (Exception e) {
+            System.out.println("Error obteniendo la media: " + e.getMessage());
+        }
+    }
+
+    
+    
 }
