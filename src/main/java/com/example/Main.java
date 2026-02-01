@@ -42,6 +42,12 @@ public class Main {
                     menuMediaSalario();
                     break;
                 case 8:
+                    menuEstadisticasPorDepartamento();
+                    break;
+                case 9:
+                    menuEmpleadoConMaximoSalario();
+                    break;
+                case 10:
                     System.out.println("\n¡Hasta luego!");
                     continuar = false;
                     break;
@@ -60,7 +66,9 @@ public class Main {
         System.out.println("5. Subir el salario a los analistas 100€");
         System.out.println("6. Decrementar la comisión existente en 20€");
         System.out.println("7. Visualizar la media del salario");
-        System.out.println("8. Salir");
+        System.out.println("8. Estadísticas por departamento");
+        System.out.println("9. Empleado con máximo salario");
+        System.out.println("10. Salir");
         System.out.print("Seleccione una opción: ");
     }
 
@@ -172,5 +180,15 @@ public class Main {
     private static void menuMediaSalario(){
         System.out.println("Obteniendo la media de los usuarios");
         empleado.obtenerMedia();
+    }
+
+    private static void menuEstadisticasPorDepartamento() {
+        System.out.println("Estadísticas de empleados por departamento");
+        empleado.estadisticasPorDepartamento();
+    }
+
+    private static void menuEmpleadoConMaximoSalario() {
+        System.out.println("Buscando el empleado con máximo salario");
+        empleado.empleadoConMaximoSalario();
     }
 }

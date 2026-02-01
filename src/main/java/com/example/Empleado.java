@@ -102,6 +102,67 @@ public class Empleado {
         }
     }
 
+    public void estadisticasPorDepartamento() {
+        try (MongoProvider provider = new MongoProvider()) {
+            List<Document> resultados = provider.miempresa().aggregate(
+                List.of(
+                    new Document("$group", new Document("_id", "$dep")
+                        .append("numEmpleados", new Document("$sum", 1))
+                        .append("salarioMedio", new Document("$avg", "$salario"))
+                        .append("salarioMaximo", new Document("$max", "$salario")))
+                )
+            ).into(new ArrayList<>());
+            
+            if (resultados.isEmpty()) {
+                System.out.println("No hay empleados registrados.\n");
+            } else {
+                System.out.println("Estadísticas por departamento:");
+                System.out.println("=====================================");
+                for (Document doc : resultados) {
+                    int departamento = doc.getInteger("_id");
+                    int numEmpleados = doc.getInteger("numEmpleados");
+                    double salarioMedio = doc.getDouble("salarioMedio");
+                    int salarioMaximo = doc.getInteger("salarioMaximo");
+                    
+                    System.out.println("Departamento " + departamento + ":");
+                    System.out.println("  - Número de empleados: " + numEmpleados);
+                    System.out.println("  - Salario medio: " + String.format("%.2f", salarioMedio) + "€");
+                    System.out.println("  - Salario máximo: " + salarioMaximo + "€");
+                    System.out.println();
+                }
+                System.out.println("=====================================\n");
+            }
+        } catch (Exception e) {
+            System.out.println("Error obteniendo estadísticas: " + e.getMessage());
+        }
+    }
+
+    public void empleadoConMaximoSalario() {
+        try (MongoProvider provider = new MongoProvider()) {
+            Document resultado = provider.miempresa().aggregate(
+                List.of(
+                    new Document("$sort", new Document("salario", -1)),
+                    new Document("$limit", 1),
+                    new Document("$project", new Document("nombre", 1).append("salario", 1))
+                )
+            ).first();
+            
+            if (resultado != null) {
+                String nombre = resultado.getString("nombre");
+                int salario = resultado.getInteger("salario");
+                System.out.println("Empleado con máximo salario:");
+                System.out.println("=====================================");
+                System.out.println("Nombre: " + nombre);
+                System.out.println("Salario: " + salario + "€");
+                System.out.println("=====================================\n");
+            } else {
+                System.out.println("No hay empleados registrados.\n");
+            }
+        } catch (Exception e) {
+            System.out.println("Error obteniendo empleado con máximo salario: " + e.getMessage());
+        }
+    }
+
     
     
 }
