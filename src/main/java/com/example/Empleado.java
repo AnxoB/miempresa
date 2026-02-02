@@ -8,7 +8,10 @@ import org.bson.conversions.Bson;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 
@@ -117,7 +120,6 @@ public class Empleado {
                 System.out.println("No hay empleados registrados.\n");
             } else {
                 System.out.println("Estadísticas por departamento:");
-                System.out.println("=====================================");
                 for (Document doc : resultados) {
                     int departamento = doc.getInteger("_id");
                     int numEmpleados = doc.getInteger("numEmpleados");
@@ -136,6 +138,27 @@ public class Empleado {
             System.out.println("Error obteniendo estadísticas: " + e.getMessage());
         }
     }
+
+
+    public List<Document> getEmpleadoSalarioDepto(){
+        List<Document> lista = new ArrayList<>();
+        List<Bson> pipeline = List.of(
+            Aggregates.group("$dep", 
+                Accumulators.sum("numEmpleados", 1),
+                Accumulators.avg("salarioMedio", "$salario"),
+                Accumulators.max("salarioMaximo", "$salario")
+            ),
+            Aggregates.sort(Sorts.ascending("dep"))
+        );
+
+        try (MongoProvider mongo = new MongoProvider()) {
+            provider.miempresa().aggregate(pipeline).into(lista);
+        } catch (Exception e) {
+            System.out.println("Error obteniendo estadísticas: " + e.getMessage());
+        }
+        return lista;
+    } 
+
 
     public void empleadoConMaximoSalario() {
         try (MongoProvider provider = new MongoProvider()) {
